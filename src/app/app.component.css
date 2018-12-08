@@ -1,0 +1,39 @@
+.slider {
+    width: 100%;
+}
+
+td.slider {
+    width: 90%
+}
+td.minValue {
+    width: 5%;
+    text-align: left;
+}
+td.maxValue {
+    width: 5%;
+    text-align: right;
+}
+
+.header-config {
+    background-color: #fff4f0;
+}
+
+button {
+    padding-left: 8px;
+    padding-right: 8px;
+    min-width: 35px;
+    margin-right: 8px;
+}
+
+input.setting-name {
+    width: 100%;
+    font-size: 15px;
+    border: 1px solid silver;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+}
+
+.hue {
+    background: linear-gradient(to right, #ff000099 0%, #ffff0099 17%, #00ff0099 33%, #00ffff99 50%, #0000ff99 67%, #ff00ff99 83%, #ff000099 100%);
+}

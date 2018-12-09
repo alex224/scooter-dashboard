@@ -1,11 +1,25 @@
 {
+  "/scooter/*": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+
   "/api/*": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  },
+
+  "/_old_scooter/*": {
     "target": "http://localhost:3000",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true,
     "pathRewrite": {
-      "^/api": ""
+      "^/scoooter": ""
     }
   }
 }

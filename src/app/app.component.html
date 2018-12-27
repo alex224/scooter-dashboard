@@ -14,12 +14,14 @@
 
   <div *ngFor="let param of setting.params">
     <table>
+      
       <tr>
-        <td colspan="3">
+        <td colspan="3" class="paramOverview">
           {{param.name}}: {{ param.value || param.defaultValue }}
         </td>
       </tr>
-      <tr>
+
+      <tr *ngIf="configParam(setting.type, param.name).type === 'int'">
         <td class="minValue">
           <mat-label>{{ configParam(setting.type, param.name).minValue }}</mat-label>
         </td>
@@ -30,6 +32,13 @@
           <mat-label>{{ configParam(setting.type, param.name).maxValue }}</mat-label>
         </td>
       </tr>
+
+      <tr *ngIf="configParam(setting.type, param.name).type === 'string'">
+        <td class="text" colspan="3">
+          <input type="text" [value]="param.value || param.defaultValue" (change)="changeValue(param, $event.target.value)">
+        </td>
+      </tr>
+
     </table>
     
   </div>
@@ -66,3 +75,5 @@
   <button mat-raised-button (click)="cloneConfig(config)"><i class="fa fa-clone"></i></button>
 
 </mat-expansion-panel>
+
+<div (click)="toggleConnectionMode()" class="ip">{{ useLocalConnections ? 'L' : 'R' }} {{ scooterLocalIP + ':' + scooterLocalPort }} <div [class.healthy]="scooterHealth" class="health-status"></div></div>

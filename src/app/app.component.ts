@@ -14,6 +14,11 @@ export class AppComponent implements OnInit {
 
   public settings: any[] = [];
   public delConfirmation = false;
+  
+  public useLocalConnections = true;
+  public scooterLocalIP = "192.168.1.125";
+  public scooterLocalPort = "11088";
+  public scooterHealth : string = null;
 
   public settingsInEditMode = null;
   @ViewChild("name") nameField: ElementRef;
@@ -23,18 +28,40 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.httpClient.get<any[]>("/api/config").subscribe(result => {
-      this.configs = result;
-      result.forEach(config => {
-        this.configMap[config.id] = config;
+    this.httpClient.get<any>("/api/ip").subscribe(result => {
+      this.scooterLocalIP = result.ip;
+
+      this.httpClient.get<any[]>(this.scooterBaseUrl + "/config").subscribe(result => {
+        this.configs = result;
+        result.forEach(config => {
+          this.configMap[config.id] = config;
+        });
       });
+
     });
+
+    
 
     this.httpClient.get<any[]>("/api/settings").subscribe(result => {
       this.settings = result;
     });
+
+    this.checkHealthState();
+    setInterval(() => {
+      this.checkHealthState();
+      }, 60000);
   }
 
+  checkHealthState() {
+    this.scooterHealth = null;
+    this.httpClient.get<any>(this.scooterBaseUrl + "/health").subscribe(result => {
+      this.scooterHealth = result.status;
+    });
+  }
+
+  get scooterBaseUrl() : string {
+    return this.useLocalConnections ? "http://" + this.scooterLocalIP + ":" + this.scooterLocalPort : "/scooter";
+  }
   
   configParam(type, paramName) {
     let foundParamFromConfig = null;
@@ -50,7 +77,7 @@ export class AppComponent implements OnInit {
         }
       });
     }
-    return foundParamFromConfig;
+    return foundParamFromConfig || {};
   }
 
   cloneSetting(setting) : void {
@@ -102,7 +129,7 @@ export class AppComponent implements OnInit {
   }
 
   isHueParam(paramName) : boolean {
-    return paramName && paramName.indexOf("hue") >= 0;
+    return paramName && paramName.indexOf("hue") >= 0 && paramName.indexOf("Speed") < 0;
   }
 
   testConfig(config) : void {
@@ -111,7 +138,7 @@ export class AppComponent implements OnInit {
   }
 
   activateSetting(setting): void {
-    let url = "/api/?type=" + setting.type;
+    let url = this.scooterBaseUrl + "/themes/?type=" + setting.type;
     setting.params.forEach(p => {
       url += "&" + p.name + "=" + p.value;
     });
@@ -132,5 +159,9 @@ export class AppComponent implements OnInit {
         .substring(1);
     }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+  }
+
+  toggleConnectionMode() {
+    this.useLocalConnections = !this.useLocalConnections;
   }
 }

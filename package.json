@@ -4,7 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json --host 0.0.0.0",
-    "build": "ng build"
+    "build": "ng build",
+    "dev": "echo index.js in VSCode als nodejs starten und im app-verzeichnis npm run start ausführen",
+    "deploy": "ng build && cd .. && scp -r proxy/*.json proxy/*.js Dockerfile docker-compose.yml alex@macmini:/home/alex/docker/scooter-dashboard/ && ssh alex@macmini 'rm -rf /home/alex/docker/scooter-dashboard/dist/' && scp -r app/dist/* alex@macmini:/home/alex/docker/scooter-dashboard/dist/ && ssh alex@macmini 'cd /home/alex/docker/scooter-dashboard/ && docker-compose stop && docker-compose up -d --build && docker-compose logs -f --tail 100'"
   },
   "private": true,
   "dependencies": {
